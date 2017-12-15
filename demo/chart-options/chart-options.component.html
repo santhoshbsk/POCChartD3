@@ -1,0 +1,440 @@
+<ul class="nav nav-tabs">
+  <li class="active">
+    <a data-toggle="tab" href="#config">Config</a>
+  </li>
+  <li>
+    <a data-toggle="tab" href="#axisControl">Axis Control</a>
+  </li>
+  <li>
+    <a data-toggle="tab" href="#theme">Theme</a>
+  </li>
+</ul>
+
+<div class="tab-content" style="padding-top:4%">
+  <!-- Config Tab -->
+  <div id="config" class="tab-pane fade  active in">
+
+    <!-- Visualization panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#Cvisualization">Visualization</a>
+          </h4>
+        </div>
+        <div id="Cvisualization" class="panel-collapse collapse">
+          <div class="panel-body">
+            <div class="btn-group">
+              <button type="button" id="btnBar" *ngFor="let chartType of chartingTypes" (click)='drawChart(chartType.value)' [class]="Options.visualType===chartType.value?'btn btn-default active':'btn btn-default'">
+                {{chartType.name}}
+              </button>
+            </div>
+            <label class="checkbox" style="padding-left: 8%;" *ngIf="enableStack">
+              <input type="checkbox" [(ngModel)]="Options.isStacked" (change)="drawChart(Options.visualType)">Stacked
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- X-Axis panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#CxAxis">X-Axis</a>
+          </h4>
+        </div>
+        <div id="CxAxis" class="panel-collapse collapse">
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="xAxis">X-Axis</label>
+              <select class="form-control" [(ngModel)]='Options.axis.x' multiple name="xAxis" id="xAxis" (change)="drawChart()">
+                <option *ngFor="let option of axisData" [ngValue]="option">{{option}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Y-Axis panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#CyAxis">Y-Axis</a>
+          </h4>
+        </div>
+        <div id="CyAxis" class="panel-collapse collapse">
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="yAxis">Y-Axis</label>
+              <select class="form-control" [(ngModel)]='Options.axis.y' multiple name="yAxis" id="yAxis" (change)="drawChart()">
+                <option *ngFor="let option of axisData" [ngValue]="option">{{option}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Z-Axis panel -->
+    <div class="panel-group" *ngIf="Options.visualType != 'bar'">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#CzAxis">Z-Axis</a>
+          </h4>
+        </div>
+        <div id="CzAxis" class="panel-collapse collapse">
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="zAxis">Z-Axis</label>
+              <select class="form-control" [(ngModel)]='Options.axis.z' multiple name="zAxis" id="zAxis" (change)="drawChart()">
+                <option *ngFor="let option of axisData" [ngValue]="option">{{option}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Series Columns panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#CseriesColumn">Series Columns</a>
+          </h4>
+        </div>
+        <div id="CseriesColumn" class="panel-collapse collapse">
+          <div class="panel-body">
+            <div class="form-group">
+              <select class="form-control" [(ngModel)]='Options.axis.series' multiple name="seriesColumn" id="seriesColumn" (change)="drawChart()">
+                <option *ngFor="let option of axisData" [ngValue]="option">{{option}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Options Options panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#CchartingOptions">Options Options</a>
+          </h4>
+        </div>
+        <div id="CchartingOptions" class="panel-collapse collapse">
+          <div class="panel-body">
+            <label class="checkbox" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.suppressZero" (change)="drawChart()">Suppress zero
+            </label>
+            <label class="checkbox" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.suppressNegative" (change)="drawChart()">Suppress negative
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Axis Control Tab -->
+  <div id="axisControl" class="tab-pane fade">
+
+    <!-- X-Axis panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#ACxAxis">X-Axis</a>
+          </h4>
+        </div>
+        <div id="ACxAxis" class="panel-collapse collapse">
+          <div class="panel-body">
+            <!-- <label class="checkbox" style="padding-left: 8%;">
+                        <input type="checkbox" [(ngModel)]="Options.style.axis.x.format" (change)="drawChart()">Format Axis
+                    </label> -->
+            <label class="checkbox" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.axis.x.show" (change)="drawChart()">Show Axis Lable
+            </label>
+            <div *ngIf="Options.style.axis.x.show">
+              <label for="dynamicXAxisLabel">X-Axis Name</label>
+              <input type="text" name="dynamicXAxisLabel" id="dynamicXAxisLabel" [(ngModel)]="Options.style.axis.x.aliasName" (change)="drawChart()"
+                class="form-control">
+            </div>
+            <label for="labelStyleX">Label Style</label>
+            <select class="form-control" [(ngModel)]='Options.style.axis.x.style' name="labelStyleX" id="labelStyleX" (change)="drawChart()">
+              <option *ngFor="let option of labelStylesX" [ngValue]="option">{{option}}</option>
+            </select>
+            <label for="labelmaxwidth">Label Max Width</label>
+            <input type="number" class="form-control" min="1" [(ngModel)]='Options.style.axis.x.maxWidth' name="labelmaxwidth" id="labelmaxwidth"
+              (change)="drawChart()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Y-Axis panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#ACyAxis">Y-Axis</a>
+          </h4>
+        </div>
+        <div id="ACyAxis" class="panel-collapse collapse">
+          <div class="panel-body">
+            <label class="checkbox" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.axis.y.format" (change)="drawChart()">Format Axis
+            </label>
+            <label class="checkbox" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.axis.y.show" (change)="drawChart()">Show Axis Lable
+            </label>
+            <div *ngIf="Options.style.axis.y.show">
+              <label for="dynamicYAxisLabel">Y-Axis Name</label>
+              <input type="text" name="dynamicYAxisLabel" id="dynamicYAxisLabel" [(ngModel)]="Options.style.axis.y.aliasName" (change)="drawChart()"
+                class="form-control">
+            </div>
+            <label for="scaleTypeY">Scale Type</label>
+            <select class="form-control" [(ngModel)]='Options.style.axis.y.scaleType' name="scaleTypeY" id="scaleTypeY" (change)="drawChart()">
+              <option *ngFor="let option of scaleTypesY" [ngValue]="option.value">{{option.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Z-Axis panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#ACzAxis">Z-Axis</a>
+          </h4>
+        </div>
+        <div id="ACzAxis" class="panel-collapse collapse">
+          <div class="panel-body">
+            <label class="checkbox" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.axis.z.format" (change)="drawChart()">Format Axis
+            </label>
+            <label class="checkbox" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.axis.z.show" (change)="drawChart()">Show Axis Lable
+            </label>
+            <div *ngIf="Options.style.axis.z.show">
+              <label for="dynamicZAxisLabel">Z-Axis Name</label>
+              <input type="text" name="dynamicZAxisLabel" id="dynamicZAxisLabel" [(ngModel)]="Options.style.axis.z.aliasName" (change)="drawChart()"
+                class="form-control">
+            </div>
+            <label for="scaleTypeZ">Scale Type</label>
+            <select class="form-control" [(ngModel)]='Options.style.axis.z.scaleType' name="scaleTypeZ" id="scaleTypeZ" (change)="drawChart()">
+              <option *ngFor="let option of scaleTypesZ" [ngValue]="option.value">{{option.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#AClegend">Legend</a>
+          </h4>
+        </div>
+        <div id="AClegend" class="panel-collapse collapse">
+          <div class="panel-body">
+            <label class="checkbox" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.legend.show" (change)="drawChart()">Show Legend
+            </label>
+            <div *ngIf='Options.style.legend.show'>
+              <label for="legendPosition">Position</label>
+              <select class="form-control" [(ngModel)]='Options.style.legend.position' name="legendPosition" id="legendPosition" (change)="drawChart()">
+                <option *ngFor="let option of legendPositions" [ngValue]="option">{{option}}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Theme Tab -->
+  <div id="theme" class="tab-pane fade">
+
+    <!-- Palette panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#Tpalette">Palette</a>
+          </h4>
+        </div>
+        <div id="Tpalette" class="panel-collapse collapse">
+          <div class="panel-body">
+            <label for="themepalette">Choose Palette</label>
+            <select class="form-control" [(ngModel)]='Options.style.palette' name="Themepalette" id="themepalette" (change)="drawChart()">
+              <option *ngFor="let option of palettes" [ngValue]="option.value">{{option.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Axis Lables panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#TaxisLabels">Axis Lables</a>
+          </h4>
+        </div>
+        <div id="TaxisLabels" class="panel-collapse collapse">
+          <div class="panel-body">
+            <label for="axisFont">Font options</label>
+            <select class="form-control" [(ngModel)]='Options.style.axis.font' name="axisFont" (change)="drawChart()">
+              <option *ngFor="let option of fontsCol" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <select class="form-control" [(ngModel)]='Options.style.axis.size' (change)="drawChart()">
+              <option *ngFor="let option of sizesCol" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <select class="form-control" [(ngModel)]='Options.style.axis.color' (change)="drawChart()">
+              <option *ngFor="let option of colors" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.axis.bold" (change)="drawChart()">Bold
+            </label>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.axis.italic" (change)="drawChart()">Italic
+            </label>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.axis.underline" (change)="drawChart()">Underline
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--Data Values panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#TdataValues">Data Values</a>
+          </h4>
+        </div>
+        <div id="TdataValues" class="panel-collapse collapse">
+          <div class="panel-body">
+            <label for="axisFont">Font options</label>
+            <select class="form-control" [(ngModel)]='Options.style.data.font' name="axisFont" (change)="drawChart()">
+              <option *ngFor="let option of fontsCol" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <select class="form-control" [(ngModel)]='Options.style.data.size' (change)="drawChart()">
+              <option *ngFor="let option of sizesCol" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <select class="form-control" [(ngModel)]='Options.style.data.color' (change)="drawChart()">
+              <option *ngFor="let option of colors" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.data.bold" (change)="drawChart()">Bold
+            </label>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.data.italic" (change)="drawChart()">Italic
+            </label>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.data.underline" (change)="drawChart()">Underline
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ticks panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#Tticks">Ticks</a>
+          </h4>
+        </div>
+        <div id="Tticks" class="panel-collapse collapse">
+          <div class="panel-body">
+            <label for="axisFont">Font options</label>
+            <select class="form-control" [(ngModel)]='Options.style.ticks.font' name="axisFont" (change)="drawChart()">
+              <option *ngFor="let option of fontsCol" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <select class="form-control" [(ngModel)]='Options.style.ticks.size' (change)="drawChart()">
+              <option *ngFor="let option of sizesCol" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <select class="form-control" [(ngModel)]='Options.style.ticks.color' (change)="drawChart()">
+              <option *ngFor="let option of colors" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.ticks.bold" (change)="drawChart()">Bold
+            </label>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.ticks.italic" (change)="drawChart()">Italic
+            </label>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.ticks.underline" (change)="drawChart()">Underline
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend panel -->
+    <div class="panel-group">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h4 class="panel-title">
+            <a data-toggle="collapse" href="#Tlegend">Legend</a>
+          </h4>
+        </div>
+        <div id="Tlegend" class="panel-collapse collapse">
+          <div class="panel-body">
+            <label for="axisFont">Font options</label>
+            <select class="form-control" [(ngModel)]='Options.style.legend.font' name="axisFont" (change)="drawChart()">
+              <option *ngFor="let option of fontsCol" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <select class="form-control" [(ngModel)]='Options.style.legend.size' (change)="drawChart()">
+              <option *ngFor="let option of sizesCol" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <select class="form-control" [(ngModel)]='Options.style.legend.color' (change)="drawChart()">
+              <option *ngFor="let option of colors" [ngValue]="option">{{option}}</option>
+            </select>
+            <br>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.legend.bold" (change)="drawChart()">Bold
+            </label>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.legend.italic" (change)="drawChart()">Italic
+            </label>
+            <label class="checkbox-inline" style="padding-left: 8%;">
+              <input type="checkbox" [(ngModel)]="Options.style.legend.underline" (change)="drawChart()">Underline
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>

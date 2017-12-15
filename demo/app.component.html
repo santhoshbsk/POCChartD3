@@ -1,0 +1,19 @@
+<div class="container-fluid">
+  <div class="row" *ngIf="Options">
+     <div class="col-xs-3">
+      <app-chart-options [Options]="Options" (draw)="chart.draw($event)" ></app-chart-options> 
+    </div>
+   <div class="col-xs-9">
+      <app-multi-series #chart [Options]="Options"></app-multi-series>
+    </div>
+
+    <div class="col-xs-9">
+      <!-- <boxplot-demo-component></boxplot-demo-component>  -->
+    </div>
+
+    <div class="col-xs-9">
+      <!-- <histogram-demo-component></histogram-demo-component> -->
+    </div>
+
+  </div>
+</div>
